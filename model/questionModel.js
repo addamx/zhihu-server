@@ -5,7 +5,6 @@ const questionSchema = Schema({
   title: { type: String, require: true },
   desc: { type: String, default: '' },
   date: { type: Date, default: Date.now },
-  //问题状态: 0:未解答, 1:有解答, 2:用户关闭, 3:管理员删除
   author: {
     ref: 'user',
     type: Schema.Types.ObjectId

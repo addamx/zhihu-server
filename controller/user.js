@@ -1,13 +1,12 @@
 const model = require('../model');
 const async = require('async');
-const questions = model.questions;
+const user = model.user;
 
 
 module.exports = function(app) {
-  app.get('/question/allquestions', (req,res) => {
-    questions
-      .find()
-      .sort({ date: -1})
+  app.get('/people/:name', (req,res) => {
+    user
+      .findOne({name: new RegExp(req.params.name, 'i')})
       .exec((err, doc) => {
         if (err) {
           return res.status(500).json({msg: '服务器出错'});

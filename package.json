@@ -6,6 +6,7 @@
     "start": "cross-env NODE_ENV=development nodemon --debug index.js"
   },
   "dependencies": {
+    "async": "^2.6.0",
     "body-parser": "^1.18.2",
     "cookie-parser": "^1.4.3",
     "cross-env": "^5.1.3",
