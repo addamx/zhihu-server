@@ -15,7 +15,7 @@ const io = global.io = require("socket.io")(server);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-// app.use(require("./jwtMiddleware")());
+app.use(require("./middleware/jwtMiddleware")());
 
 // require("./socket")(io);
 require('./controller')(app)
