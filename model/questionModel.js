@@ -10,7 +10,7 @@ const questionSchema = Schema({
     type: Schema.Types.ObjectId,
     require: true
   },
-  answers: [{ type: Schema.Types.ObjectId, ref: 'answer' }]
+  answers: [{ type: Schema.Types.ObjectId, ref: 'answer', require: true }]
 })
 
 

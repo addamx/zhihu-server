@@ -6,11 +6,13 @@ const userSchema = Schema({
   pwd: { type: String, require: true },
   questions: [{
     type: Schema.Types.ObjectId,
-    ref: 'question'
+    ref: 'question',
+    require: true
   }],
   answers: [{
     type: Schema.Types.ObjectId,
-    ref: 'answer'
+    ref: 'answer',
+    require: true
   }]
 })
 

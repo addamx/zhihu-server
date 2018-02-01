@@ -12,14 +12,14 @@ module.exports = function(app) {
       if (doc) {
         return res.status(200).json({code:1, msg: '该用户名已被注册'});
       }
-      const entity = new User({name, pwd});
+      const entity = new User({name, pwd, questions: [], answers: []});
       entity.save((err, doc) => {
         if (err || !doc) {
           return res.status(500).json({msg: '后端出错'});
         }
-        const {name, type, _id} = doc;
+        const { name, _id,} = doc;
         const token = jwt.sign({ id: _id }, key, { expiresIn: 60 * 60 * 24 * 7 });
-        return res.status(200).json({code: 0, token, data: {name, id: _id}});
+        return res.status(200).json({ code: 0, token, data: { name, _id}});
       })
     })
   });
@@ -29,10 +29,10 @@ module.exports = function(app) {
     //!![TODO]如果不判空, name & pwd位undefined会返回所有;
     User.findOne({name, pwd}, {pwd: 0}, (err, doc) => {
       if (err) return res.status(500).json({msg: '后端出错'});
-      if (!doc) return res.status(200).json({code: 1, msg: '用户名或密码错误'}); 
-      const {name, _id} = doc;
+      if (!doc) return res.status(200).json({code: 1, msg: '用户名或密码错误'});
+      const { name, _id} = doc;
       const token = jwt.sign({ id: _id }, key, { expiresIn: 60 * 60 * 24 * 7 });
-      return res.status(200).json({code: 0, token, data: {name, id: _id}})
+      return res.status(200).json({ code: 0, token, data: { name, _id}})
     })
   });
   app.get('/user/info/:id', (req,res) => {
