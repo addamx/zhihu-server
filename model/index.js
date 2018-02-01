@@ -1,7 +1,7 @@
 require('./db')
 
 module.exports = {
-  questions: require('./questionModel'),
-  answers: require('./answerModel'),
+  question: require('./questionModel'),
+  answer: require('./answerModel'),
   user: require('./userModel')
 }

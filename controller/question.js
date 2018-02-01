@@ -1,13 +1,13 @@
 const model = require('../model');
 const async = require('async');
-const Questions = model.questions;
+const Question = model.question;
 const User = model.user;
 
 
 module.exports = function(app) {
   //获取所有问题
   app.get('/question/allquestions', (req,res) => {
-    Questions
+    Question
       .find()
       .sort({ date: -1})
       .exec((err, doc) => {
@@ -16,10 +16,11 @@ module.exports = function(app) {
       });
   });
   //获取问题及其回答
-  app.get('/question/:id', (req,res) => {
-    Questions
+  app.get('/question/view/:id', (req,res) => {
+    Question
       .findOne({_id: req.params.id})
-      // .populate()
+      .populate({ path: 'author', select: 'name' })
+      .populate({ path: 'answers', populate:({path: 'author', select: 'name'}) })
       .exec((err, doc) => {
         if (err) return res.status(500).json({ msg: '服务器出错' });
         return res.status(200).json({ code: 0, data: doc });
@@ -32,7 +33,7 @@ module.exports = function(app) {
 
     async.waterfall([
       function(next) {
-        const entity = new Questions({title, desc, author: userId});
+        const entity = new Question({title, desc, author: userId});
         entity.save((err,doc) => {
           if (err || !doc) return res.status(500).json({ msg: '后端出错' });
           next(null, doc)

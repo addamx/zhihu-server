@@ -7,7 +7,8 @@ const questionSchema = Schema({
   date: { type: Date, default: Date.now },
   author: {
     ref: 'user',
-    type: Schema.Types.ObjectId
+    type: Schema.Types.ObjectId,
+    require: true
   },
   answers: [{ type: Schema.Types.ObjectId, ref: 'answer' }]
 })

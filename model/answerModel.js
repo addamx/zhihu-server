@@ -6,12 +6,14 @@ const answerSchema = Schema({
   date: { type: Date, default: Date.now },
   author: {
     ref: 'user',
-    type: Schema.Types.ObjectId
+    type: Schema.Types.ObjectId,
+    require: true
   },
   question: {
     type:
     Schema.Types.ObjectId,
-    ref: 'question'
+    ref: 'question',
+    require: true
   }
 })
 

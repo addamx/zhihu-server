@@ -32,12 +32,16 @@ module.exports = function(app) {
       return res.status(200).json({code: 0, token, data: {name, id: _id}})
     })
   });
-  app.post('/user/info', (req,res) => {
-    const { id } = req.decoded;
+  app.get('/user/info/:id', (req,res) => {
+    const id  = req.params.id;
     User
       .findOne({_id: id}, {pwd: 0})
       .populate({
         path: 'questions',
+        options: { sort: {date: -1}}
+      })
+      .populate({
+        path: 'answers',
         options: { sort: {date: -1}}
       })
       .exec((err, doc) => {
