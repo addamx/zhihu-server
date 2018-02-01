@@ -9,6 +9,7 @@ module.exports = function(app) {
   app.get('/question/allquestions', (req,res) => {
     Question
       .find()
+      .populate({ path: 'author', select: 'name' })
       .sort({ date: -1})
       .exec((err, doc) => {
         if (err) return res.status(500).json({msg: '服务器出错'});

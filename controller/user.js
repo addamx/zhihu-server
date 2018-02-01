@@ -7,6 +7,7 @@ const User = model.user;
 module.exports = function(app) {
   app.post('/user/register', (req,res) => {
     const { name, pwd } = req.body;
+    if (!name || !pwd) return res.status(200).json({code: 1, msg: '请输入用户名和密码'}); 
     User.findOne({name}, (err, doc) => {
       if (doc) {
         return res.status(200).json({code:1, msg: '该用户名已被注册'});
@@ -24,6 +25,8 @@ module.exports = function(app) {
   });
   app.post('/user/login', (req,res) => {
     const {name, pwd} = req.body;
+    if (!name || !pwd) return res.status(200).json({code: 1, msg: '请输入用户名和密码'}); 
+    //!![TODO]如果不判空, name & pwd位undefined会返回所有;
     User.findOne({name, pwd}, {pwd: 0}, (err, doc) => {
       if (err) return res.status(500).json({msg: '后端出错'});
       if (!doc) return res.status(200).json({code: 1, msg: '用户名或密码错误'}); 
