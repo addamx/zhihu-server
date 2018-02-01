@@ -8,11 +8,11 @@ const User = model.user;
 module.exports = function(app) {
   app.post('/answer/add', (req,res) => {
     const userId = req.decoded.id;
-    const { content, question } = req.body;
+    const { content, questionId } = req.body;
 
     async.waterfall([
       function(next) {
-        const entity = new Answer({ content, question, author: userId });
+        const entity = new Answer({ content, questionId, author: userId });
         entity.save((err,doc) => {
           if (err || !doc) return res.status(500).json({msg: "后端出错"});
           next(null, doc);
@@ -20,7 +20,7 @@ module.exports = function(app) {
       },
       function(answer, next) {
         Question.findOneAndUpdate(
-          {_id: question},
+          {_id: questionId},
           { $push: {answers: answer._id} },
           (err,doc) => {
             if (err) return res.status(500).json({msg: "后端出错"});

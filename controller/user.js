@@ -41,17 +41,19 @@ module.exports = function(app) {
       .findOne({_id: id}, {pwd: 0})
       .populate({
         path: 'questions',
-        options: { sort: {date: -1}}
+        options: { sort: {date: -1}},
+        populate: {path: 'author', select: 'name'}
       })
       .populate({
         path: 'answers',
-        options: { sort: {date: -1}}
+        options: { sort: {date: -1}},
+        populate: {path: 'author', select: 'name'}
       })
       .exec((err, doc) => {
         if (err) {
           return res.status(500).json({msg: '服务器出错'});
         }
-        return res.json({ code: 0, data: doc })
+        return res.status(200).json({ code: 0, data: doc })
       });
   });
 }
