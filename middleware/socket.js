@@ -18,6 +18,12 @@ module.exports = (io) => {
       }
     })
 
+    client.on('sendMessage', ({from, to, message, chatId, date }) => {
+
+
+      test(message)
+    })
+
     client.on('getUserName', id => {
       User.findOne({_id: id}, (err, user) => {
         if (user) {
@@ -27,5 +33,10 @@ module.exports = (io) => {
         }
       })
     })
+
+    //测试
+    function test(data) {
+      client.emit('systemlog', {msg: '服务器收到消息: ' + data})
+    }
   })
 }

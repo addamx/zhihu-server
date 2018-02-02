@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(require("./middleware/jwtMiddleware")());
 
-// require("./socket")(io);
+require("./middleware/socket")(io);
 require('./controller')(app)
 
 server.listen(1510, function() {
