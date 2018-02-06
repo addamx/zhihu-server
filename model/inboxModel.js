@@ -9,7 +9,7 @@ const inboxSchema = Schema({
     chatId: { type: String, require: true },
     from: { type: Schema.Types.ObjectId, require: true, ref: 'user' },
     to: { type: Schema.Types.ObjectId, require: true, ref: 'user' },
-    message: { type: Schema.Types.ObjectId, require: true },
+    message: { type: String, require: true },
     date: { type: Date, defaut: Date.now },
     fromReaded: { type: Boolean, default: false },
     toReaded: { type: Boolean, default: false }

@@ -4,7 +4,7 @@ const key = require('../config').privateKey;
 const async = require('async');
 
 const User = model.user;
-const Inbox = model.Inbox;
+const Inbox = model.inbox;
 
 let clients = {};
 global.clients = clients;
@@ -16,7 +16,7 @@ module.exports = (io) => {
     if (client.handshake.query && client.handshake.query.token) {
       jwt.verify(client.handshake.query.token, key, (err, decoded) => {
         if (err) return next(new Error('Authentication error'));
-        client.userId = decoded;
+        client.userId = decoded.id;
         next();
       })
     }
@@ -31,49 +31,56 @@ module.exports = (io) => {
       }
     })
 
-    client.on('sendMessage', ({from, to, message, chatId}) => {
+    client.on('sendMessage', ({to, message, chatId}) => {
 
-      test({from, to, message, chatId, date});
-
-      const messageItem = {from, to, message, chaId}
+      test({to, message, chatId});
+      const from = client.userId;   //fromId由jwt解码
+      const messageItem = {from, to, message, chatId}
+      console.log({from, to, message, chatId})
 
       //储存message
       async.parallel({
         from: function(next) {
-          User.find({_id: from}, (err, doc) => {
+          User.findOne({_id: from}, (err, doc) => {
             if (err || !doc) next(err, null);
-            next(null, true) 
+            next(null, true);
           })
         },
         to: function(next) {
-          User.find({_id: to}, (err, doc) => {
+          User.findOne({_id: to}, (err, doc) => {
             if (err || !doc) next(err, null);
-            next(null, true) 
+            next(null, true);
           })
         }
       },
       function(err, result) {
-        if (err) client.emt('error', {errorMsg: '找不到用户'});
+        if (err) client.emit('error', {errorMsg: '找不到用户'});
         Inbox.findOne({chatId}, (err, doc) => {
-          if (err) client.emt('error', { errorMsg: '后端出错' });
+          if (err) client.emit('error', { errorMsg: '后端出错' });
           // 之前不存在的chat
           if (!doc) {
-            var InboxModel= new Inbox({
+            var inboxEntity= new Inbox({
               chatId,
               messageList: [messageItem]
             });
-            InboxModel.save((err, inbox) => {
-              if (err || !inbox) client.emit("serverError", { errorMsg: "后端出错" });
+            inboxEntity.save((err, inbox) => {
+              if (err || !inbox) {
+                client.emit("serverError", { errorMsg: "后端出错" });
+                return;
+              };
               if(clients[to]) {
-                clients[to].emit('receiveMessage', { from, to, message, chaId})
+                clients[to].emit('receiveMessage', { from, to, message, chatId})
               }
             })
           } else {
             doc.messageList.push(messageItem);
             doc.save((err, doc) => {
-              if (er || !doc) client.emit("serverError", { errorMsg: "后端出错" });
+              if (err || !doc) {
+                client.emit("serverError", { errorMsg: "后端出错" });
+                return;
+              }
               if (clients[to]) {
-                clients[to].emit('receiveMessage', { from, to, message, chaId })
+                clients[to].emit('receiveMessage', { from, to, message, chatId })
               }
             })
           }

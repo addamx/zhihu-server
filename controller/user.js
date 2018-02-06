@@ -35,8 +35,9 @@ module.exports = function(app) {
       return res.status(200).json({ code: 0, token, data: { name, _id}})
     })
   });
-  app.get('/user/info/:id', (req,res) => {
-    const id  = req.params.id;
+
+
+  const getUser = (req, res, id) => {
     User
       .findOne({_id: id}, {pwd: 0})
       .populate({
@@ -55,5 +56,13 @@ module.exports = function(app) {
         }
         return res.status(200).json({ code: 0, data: doc })
       });
+  }
+  app.get('/user/info/:id', (req,res) => {
+    const id = req.params.id;
+    getUser(req, res, id);
   });
+  app.get('/user/auth', (req,res) => {
+    const id = req.decoded.id;
+    getUser(req, res, id);
+  })
 }
