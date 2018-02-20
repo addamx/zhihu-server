@@ -35,7 +35,7 @@ module.exports = (io) => {
 
       test({to, message, chatId});
       const from = client.userId;   //fromId由jwt解码
-      const messageItem = {from, to, message, chatId}
+      const messageItem = {from, to, message}
       console.log({from, to, message, chatId})
 
       //储存message

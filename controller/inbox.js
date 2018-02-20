@@ -9,7 +9,7 @@ module.exports = function(app) {
     const userId = req.decoded.id;
     
     Inbox.findOne({chatId: {$regex: userId}})   //new RegExp(userId)
-      .populate({path: 'messageList', populate:{path:'from', select:'name'}, model: 'inbox'})
+      .populate({ path: 'messageList.from messageList.to', select:'name'})
       .exec((err, doc) => {
         if (err) {
           console.log(err.message)
