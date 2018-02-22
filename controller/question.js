@@ -40,7 +40,7 @@ module.exports = function(app) {
           next(null, doc)
         })
       },
-      function (question, next) {
+      function(question, next) {
         User.findOneAndUpdate(
           {_id: userId},
           {

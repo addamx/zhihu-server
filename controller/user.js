@@ -42,13 +42,15 @@ module.exports = function(app) {
       .findOne({_id: id}, {pwd: 0})
       .populate({
         path: 'questions',
-        options: { sort: {date: -1}},
-        populate: {path: 'author', select: 'name'}
+        options: { sort: {date: -1}}
       })
       .populate({
         path: 'answers',
-        options: { sort: {date: -1}},
-        populate: {path: 'author', select: 'name'}
+        options: { sort: {date: -1}}
+      })
+      .populate({
+        path: 'notices',
+        options: { sort: { date: -1 } },
       })
       .exec((err, doc) => {
         if (err) {

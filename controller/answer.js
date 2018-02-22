@@ -3,6 +3,7 @@ const async = require('async');
 const Answer = model.answer;
 const Question = model.question;
 const User = model.user;
+const socketNotify = require('../util/notify');
 
 
 module.exports = function(app) {
@@ -24,6 +25,7 @@ module.exports = function(app) {
           { $push: {answers: answer._id} },
           (err,doc) => {
             if (err) return res.status(500).json({msg: "后端出错"});
+            socketNotify.notifyAnswer({user: doc.author, content: `你的问题${doc.title}获得回答`})
             next(null, answer);
           }
         )

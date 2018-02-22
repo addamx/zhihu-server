@@ -13,6 +13,11 @@ const userSchema = Schema({
     type: Schema.Types.ObjectId,
     ref: 'answer',
     require: true
+  }],
+  notices: [{
+    type: Schema.Types.ObjectId,
+    ref: 'notice',
+    require: true
   }]
 })
 
