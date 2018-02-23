@@ -67,8 +67,10 @@ module.exports = (io) => {
             });
             // 之前不存在的chat
             if (!doc) {
+              const talkers = [to, from]
               var inboxEntity = new Inbox({
                 chatId,
+                talkers,
                 messageList: [messageItem]
               });
               inboxEntity.save((err, inbox) => {
@@ -79,7 +81,7 @@ module.exports = (io) => {
                   return;
                 };
                 if (clients[to]) {
-                  clients[to].emit('receiveMessage', {
+                  io.to(clients[to]).emit('receiveMessage', {
                     from,
                     to,
                     message,
@@ -97,7 +99,7 @@ module.exports = (io) => {
                   return;
                 }
                 if (clients[to]) {
-                  clients[to].emit('receiveMessage', {
+                  io.to(clients[to]).emit('receiveMessage', {
                     from,
                     to,
                     message,

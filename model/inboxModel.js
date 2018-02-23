@@ -11,6 +11,15 @@ const inboxSchema = Schema({
     default: Date.now
   },
 
+  // mongoose 不支持dictionary field
+  talkers: [
+    {
+      type: Schema.Types.ObjectId,
+      require: true,
+      ref: 'user'
+    }
+  ],
+
   messageList: [{
     chatId: {
       type: String,
@@ -32,7 +41,8 @@ const inboxSchema = Schema({
     },
     date: {
       type: Date,
-      defaut: Date.now
+      defaut: Date.now,
+      require: true
     },
     fromReaded: {
       type: Boolean,

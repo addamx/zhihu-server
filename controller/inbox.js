@@ -15,7 +15,7 @@ module.exports = function (app) {
       }) //new RegExp(userId)
       .populate({
         // "array.field_name" 填充数组内的字段
-        path: 'messageList.from messageList.to',
+        path: 'messageList.from messageList.to talkers',
         select: 'name'
       })
       .exec((err, doc) => {
