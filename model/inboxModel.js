@@ -46,11 +46,13 @@ const inboxSchema = Schema({
     },
     fromReaded: {
       type: Boolean,
-      default: false
+      default: false,
+      require: true
     },
     toReaded: {
       type: Boolean,
-      default: false
+      default: false,
+      require: true
     }
   }]
 })

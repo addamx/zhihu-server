@@ -30,9 +30,29 @@ module.exports = (io) => {
         delete clients[client.userId];
       })
 
+      client.on('readChat', (chatId) => {
+        const userId = client.userId;
+        Inbox.findOne({
+          chatId
+        }, (err, doc) => {
+          if (err) client.emit('error', {
+            errorMsg: '后端出错'
+          });
+          var len = doc.messageList.length;
+          for (var i = 0; i < len; i++) {
+            let msg = doc.messageList[i];
+            if (msg.from._id === userId) {
+              msg.fromReaded = true;
+            } else {
+              msg.toReaded = true;
+            }
+          }
+          doc.save((err, doc) => {})
+        });
+      })
+
       
       client.on('sendMessage', ({to, message, chatId}) => {
-        test({to,message,chatId});
         const from = client.userId; //fromId由jwt解码
         const messageItem = {from,to,message,chatId}
 
@@ -41,17 +61,17 @@ module.exports = (io) => {
           from: function (next) {
             User.findOne({
               _id: from
-            }, (err, doc) => {
+            }, {name: 1}, (err, doc) => {
               if (err || !doc) next(err, null);
-              next(null, true);
+              next(null, doc);
             })
           },
           to: function (next) {
             User.findOne({
               _id: to
-            }, (err, doc) => {
+            }, {name: 1}, (err, doc) => {
               if (err || !doc) next(err, null);
-              next(null, true);
+              next(null, doc);
             })
           }
         },
@@ -82,8 +102,7 @@ module.exports = (io) => {
                 };
                 if (clients[to]) {
                   io.to(clients[to]).emit('receiveMessage', {
-                    from,
-                    to,
+                    from: result.from,
                     message,
                     chatId
                   })
@@ -100,8 +119,7 @@ module.exports = (io) => {
                 }
                 if (clients[to]) {
                   io.to(clients[to]).emit('receiveMessage', {
-                    from,
-                    to,
+                    from: result.from,
                     message,
                     chatId
                   })
@@ -112,12 +130,12 @@ module.exports = (io) => {
         })
       })
 
-      client.on('getUserName', id => {
+      client.on('fetchUser', _id => {
         User.findOne({
-          _id: id
+          _id
         }, (err, user) => {
           if (user) {
-            client.emit('userName', user.user)
+            client.emit('getUser', {_id, name: user.name})
           } else {
             client.emit('serverError', {
               errorMsg: '找不到用户'
