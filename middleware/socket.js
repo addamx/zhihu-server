@@ -38,16 +38,18 @@ module.exports = (io) => {
           if (err) client.emit('error', {
             errorMsg: '后端出错'
           });
-          var len = doc.messageList.length;
-          for (var i = 0; i < len; i++) {
-            let msg = doc.messageList[i];
-            if (msg.from._id === userId) {
-              msg.fromReaded = true;
-            } else {
-              msg.toReaded = true;
+          if (doc) {
+            var len = doc.messageList.length;
+            for (var i = 0; i < len; i++) {
+              let msg = doc.messageList[i];
+              if (msg.from._id === userId) {
+                msg.fromReaded = true;
+              } else {
+                msg.toReaded = true;
+              }
             }
+            doc.save((err, doc) => { })
           }
-          doc.save((err, doc) => {})
         });
       })
 
